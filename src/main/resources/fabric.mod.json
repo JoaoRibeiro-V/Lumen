@@ -1,6 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "lumen",
+    "accessWidener": "lumen.accesswidener",
 	"version": "${version}",
 	"name": "Lumen",
 	"description": "This is an example description! Tell everyone what your mod is about!",

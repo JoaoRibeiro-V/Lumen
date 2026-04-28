@@ -35,11 +35,30 @@ public class BloomPostProcessor {
         bobDelta = new Matrix4f(bobBefore).invert().mul(after);
     }
 
-    public static void saveMatrices(Camera camera) {
+    public static void saveMatrices(Camera camera, Minecraft mc) {
+        float fovDegrees = (float) mc.gameRenderer.getFov(
+                camera, mc.getTimer().getGameTimeDeltaPartialTick(true), true);
+        float aspectRatio = (float) mc.getWindow().getWidth() / mc.getWindow().getHeight();
+
+        savedProjection = new Matrix4f().perspective(
+                (float) Math.toRadians(fovDegrees),
+                aspectRatio,
+                0.05f,
+                512.0f
+        );
+
+        // no bob delta — just pure camera rotation
+        Quaternionf conjugate = camera.rotation().conjugate(new Quaternionf());
+        savedModelView = new Matrix4f().rotation(conjugate);
+    }
+
+    public static void saveProjection() {
         savedProjection = new Matrix4f(RenderSystem.getProjectionMatrix());
-        savedModelView = new Matrix4f(bobDelta).mul(new Matrix4f()
-                        .rotationX(camera.getXRot() * Mth.DEG_TO_RAD)
-                        .rotateY((camera.getYRot() + 180f) * Mth.DEG_TO_RAD));
+    }
+
+    public static void saveModelView(Camera camera) {
+        Quaternionf conjugate = camera.rotation().conjugate(new Quaternionf());
+        savedModelView = new Matrix4f().rotation(conjugate);
     }
 
     public static Matrix4f getSavedProjection() { return savedProjection; }
@@ -56,6 +75,7 @@ public class BloomPostProcessor {
     private static RenderTarget mip4; // w/16
     private static RenderTarget mip5; // w/32
     private static RenderTarget mip6; // w/64
+    private static RenderTarget mip7;
 
     public static void ensureMask(Minecraft mc) {
         int w = mc.getMainRenderTarget().width;
@@ -69,6 +89,7 @@ public class BloomPostProcessor {
             if (mip4 != null) mip4.destroyBuffers();
             if (mip5 != null) mip5.destroyBuffers();
             if (mip6 != null) mip6.destroyBuffers();
+            if (mip7 != null) mip7.destroyBuffers();
             if (depthMasked != null) depthMasked.destroyBuffers();
             bloomMask = new TextureTarget(w, h, true, Minecraft.ON_OSX);
             bloomMask.setClearColor(0,0,0,0);
@@ -80,6 +101,8 @@ public class BloomPostProcessor {
             mip4 = new TextureTarget(w / 16, h / 16, false, Minecraft.ON_OSX);
             mip5 = new TextureTarget(w / 32, h / 32, false, Minecraft.ON_OSX);
             mip6 = new TextureTarget(w / 64, h / 64, false, Minecraft.ON_OSX);
+            mip7 = new TextureTarget(w / 128, h / 128, false, Minecraft.ON_OSX);
+
             depthMasked = new TextureTarget(w, h, false, Minecraft.ON_OSX);
             lastWidth = w;
             lastHeight = h;
@@ -98,42 +121,53 @@ public class BloomPostProcessor {
         int w16 = w/16, h16 = h/16;
         int w32 = w/32, h32 = h/32;
         int w64 = w/64, h64 = h/64;
+        int w128 = w/128, h128 = h/128;
 
-        // blur system
-        blit(bloomMask, mip1, w, h, w2, h2);
-        blit(mip1, mip2, w2, h2, w4, h4);
-        blit(mip2, mip3, w4, h4, w8, h8);
-        blit(mip3, mip4, w8, h8, w16, h16);
-        blit(mip4, mip5, w16, h16, w32, h32);
-        blit(mip5, mip6, w32, h32, w64, h64);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+        mip1.clear(Minecraft.ON_OSX);
+        mip2.clear(Minecraft.ON_OSX);
+        mip3.clear(Minecraft.ON_OSX);
+        mip4.clear(Minecraft.ON_OSX);
+        mip5.clear(Minecraft.ON_OSX);
+        mip6.clear(Minecraft.ON_OSX);
+        mip7.clear(Minecraft.ON_OSX);
 
-        blit(mip6, mip5, w64, h64, w32, h32);
-        blit(mip5, mip4, w32, h32, w16, h16);
-        blit(mip4, mip3, w16, h16, w8,  h8);
-        blit(mip3, mip2, w8,  h8,  w4,  h4);
-        blit(mip2, mip1, w4,  h4,  w2,  h2);
-        blit(mip1, bloomMask, w2, h2, w, h);
+        // pre-blur to soften hard edges
+        for (int i = 0; i < 4; i++) {
+            mip1.clear(Minecraft.ON_OSX);
+            blitLinear(bloomMask, mip1, w, h, w2, h2);
+            blitLinear(mip1, bloomMask, w2, h2, w, h);
+        }
 
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
+        // downsample
+        blitLinear(bloomMask, mip1, w,   h,   w2,  h2);
+        blitLinear(mip1,     mip2, w2,  h2,  w4,  h4);
+        blitLinear(mip2,     mip3, w4,  h4,  w8,  h8);
+        blitLinear(mip3,     mip4, w8,  h8,  w16, h16);
+        blitLinear(mip4,     mip5, w16, h16, w32, h32);
+        blitLinear(mip5,     mip6, w32, h32, w64, h64);
+        blitLinear(mip6,     mip7, w64, h64, w128, h128);
 
+        // upsample
+        blitLinear(mip7, mip6,w128, h128, w64, h64 );
+        blitLinear(mip6, mip5,      w64, h64, w32, h32);
+        blitLinear(mip5, mip4,      w32, h32, w16, h16);
+        blitLinear(mip4, mip3,      w16, h16, w8,  h8);
+        blitLinear(mip3, mip2,      w8,  h8,  w4,  h4);
+        blitLinear(mip2, mip1,      w4,  h4,  w2,  h2);
+        blitLinear(mip1, bloomMask, w2,  h2,  w,   h);
+
+        // composite onto main
         GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, mc.getMainRenderTarget().frameBufferId);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-
         bloomMask.blitToScreen(w, h, false);
-
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
-
         mc.getMainRenderTarget().bindWrite(false);
     }
 
-    // blit applier
-    private static void blit(RenderTarget src, RenderTarget dst,
-                             int srcW, int srcH, int dstW, int dstH) {
+    private static void blitLinear(RenderTarget src, RenderTarget dst,
+                                   int srcW, int srcH, int dstW, int dstH) {
         GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, src.frameBufferId);
         GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, dst.frameBufferId);
         GL30.glBlitFramebuffer(0, 0, srcW, srcH, 0, 0, dstW, dstH,

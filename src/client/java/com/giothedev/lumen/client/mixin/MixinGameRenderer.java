@@ -19,8 +19,8 @@ public class MixinGameRenderer {
     @Inject(method = "renderLevel", at = @At("TAIL"))
     private void afterLevel(DeltaTracker deltaTracker, CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.level == null) return;
-        BloomPostProcessor.saveMatrices(mc.gameRenderer.getMainCamera());
+        if (mc.level == null) return;
+        BloomPostProcessor.saveModelView(mc.gameRenderer.getMainCamera());
         BloomMaskRenderer.render(mc);
     }
 
@@ -33,5 +33,14 @@ public class MixinGameRenderer {
         Minecraft mc = Minecraft.getInstance();
         if(mc.level == null) return;
         BloomPostProcessor.applyToMain(mc);
+    }
+
+    @Inject(method = "renderLevel", at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/renderer/GameRenderer;resetProjectionMatrix(Lorg/joml/Matrix4f;)V",
+            shift = At.Shift.AFTER
+    ))
+    private void afterProjectionSet(DeltaTracker deltaTracker, CallbackInfo ci) {
+        BloomPostProcessor.saveProjection();
     }
 }

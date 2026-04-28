@@ -38,9 +38,9 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 public class BloomMaskRenderer {
 
-    public static int sampleCount = 12;
+    public static int sampleCount = 16;
     public static int sampleRange = 30;
-    public static double sampleRadius = 0.3d;
+    public static double sampleRadius = 0.25d;
     public static double visibilityPow = 0.5d;
 
     private static final Direction[] DIRECTIONS = Direction.values();
@@ -109,12 +109,12 @@ public class BloomMaskRenderer {
     private static float getCachedVisibility(Level level, Vec3 camPos, BlockPos pos,
                                              Vec3 center, int samples, Minecraft mc) {
         long frame = mc.level.getGameTime();
-        if (frame!=lastCacheFrame || lastCamPos.distanceToSqr(camPos)>1.0) {
+        if (frame - lastCacheFrame >= 10) {
             visibilityCache.clear();
-            lastCamPos = camPos;
             lastCacheFrame = frame;
         }
-        return visibilityCache.computeIfAbsent(pos.immutable(),p -> computeVisibility(level, camPos, p, center, samples, mc));
+        return visibilityCache.computeIfAbsent(pos.immutable(),
+                p -> computeVisibility(level, camPos, p, center, samples, mc));
     }
 
     public static void render(Minecraft mc) {
@@ -182,23 +182,17 @@ public class BloomMaskRenderer {
                     double len = toBlock.length();
                     if(len < 0.0001) continue;
 
-                    double dot = toBlock.dot(look)/len;
-                    float angleVis = (float) Mth.clamp((dot-0.2)/(0.5-0.2), 0.0, 1.0);
-                    angleVis = angleVis * angleVis * (3-2 * angleVis);
-                    if(angleVis <= 0.01f) continue;
-
-                    int dynamicSamples = distSq>400 ? 4 : distSq>100 ? 8 : sampleCount;
+                    int dynamicSamples = distSq > 100 ? 1 : distSq > 50 ? 4 : sampleCount;
 
                     float vis = getCachedVisibility(level, camPos, mp.immutable(), center, dynamicSamples, mc);
                     vis = (float) Math.pow(vis, visibilityPow);
-                    vis *= angleVis;
-                    if(vis <= 0.02f) continue;
+                    if (vis <= 0.02f) continue;
 
+                    float alpha = data.intensity * vis;
                     drewSomething = true;
                     float ox = (float)(x-camPos.x);
                     float oy = (float)(y-camPos.y);
                     float oz = (float)(z-camPos.z);
-                    float alpha = data.intensity * vis;
 
                     VoxelShape shape = state.getShape(level, mp);
                     if (shape.isEmpty()) shape = Shapes.block();
