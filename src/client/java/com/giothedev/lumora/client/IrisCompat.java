@@ -1,4 +1,4 @@
-package com.giothedev.lumen.client;
+package com.giothedev.lumora.client;
 
 import net.fabricmc.loader.api.FabricLoader;
 

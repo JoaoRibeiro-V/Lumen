@@ -1,4 +1,4 @@
-package com.giothedev.lumen;
+package com.giothedev.lumora;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -52,11 +52,11 @@ public class BloomConfig {
                             parseArray(json.getAsJsonArray("particles"), BLOOM_PARTICLES);
                         }
                     }catch(Exception e){
-                        Lumen.LOGGER.error("Failed to load bloom config {}: {}", id, e.getMessage());
+                        Lumora.LOGGER.error("Failed to load bloom config {}: {}", id, e.getMessage());
                     }
                 });
 
-        Lumen.LOGGER.info("Bloom config loaded: {} blocks, {} particles", BLOOM_BLOCKS.size(), BLOOM_PARTICLES.size());
+        Lumora.LOGGER.info("Bloom config loaded: {} blocks, {} particles", BLOOM_BLOCKS.size(), BLOOM_PARTICLES.size());
     }
 
     // PARSER
@@ -78,7 +78,7 @@ public class BloomConfig {
                     JsonObject obj = e.getAsJsonObject();
 
                     if(!obj.has("id")){
-                        Lumen.LOGGER.warn("Skipping bloom entry without 'id': {}", obj);
+                        Lumora.LOGGER.warn("Skipping bloom entry without 'id': {}", obj);
                         continue;
                     }
 
@@ -115,14 +115,14 @@ public class BloomConfig {
                         data.activation = a;
                     }
                 }else{
-                    Lumen.LOGGER.warn("Invalid bloom entry: {}", e);
+                    Lumora.LOGGER.warn("Invalid bloom entry: {}", e);
                     continue;
                 }
 
                 map.put(id, data);
 
             }catch (Exception ex){
-                Lumen.LOGGER.warn("Failed to parse bloom entry: {}", e);
+                Lumora.LOGGER.warn("Failed to parse bloom entry: {}", e);
             }
         }
     }

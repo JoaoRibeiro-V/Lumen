@@ -1,0 +1,31 @@
+{
+  "targets": [
+    "input",
+    "blur_h",
+    "output"
+  ],
+  "passes": [
+    {
+      "name": "lumen_blur",
+      "intarget": "minecraft:main",
+      "outtarget": "blur_h",
+      "auxtargets": [],
+      "program": "lumen_blur",
+      "uniforms": [
+        { "name": "BlurDir", "values": [ 2.0, 0.0 ] },
+        { "name": "Radius", "values": [ 20.0 ] }
+      ]
+    },
+    {
+      "name": "lumen_blur",
+      "intarget": "blur_h",
+      "outtarget": "output",
+      "auxtargets": [],
+      "program": "lumen_blur",
+      "uniforms": [
+        { "name": "BlurDir", "values": [ 0.0, 2.0 ] },
+        { "name": "Radius", "values": [ 20.0 ] }
+      ]
+    }
+  ]
+}

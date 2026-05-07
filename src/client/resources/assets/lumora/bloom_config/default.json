@@ -1,12 +1,12 @@
 {
   "blocks": [
-    { "id": "minecraft:fire", "color": [1.0, 0.5, 0.1], "intensity": 1.75, "occludes": true },
-    { "id": "minecraft:soul_fire", "color": [0.3, 0.8, 1.0], "intensity": 1.75, "occludes": true },
-    { "id": "minecraft:lava", "color": [1.0, 0.4, 0.1], "intensity": 0.325, "occludes": true },
-    { "id": "minecraft:magma_block", "color": [1.0, 0.3, 0.1], "intensity": 0.4, "occludes": true },
+    { "id": "minecraft:fire", "color": [1.0, 0.5, 0.1], "intensity": 15, "occludes": true },
+    { "id": "minecraft:soul_fire", "color": [0.3, 0.8, 1.0], "intensity": 15, "occludes": true },
+    { "id": "minecraft:lava", "color": [1.0, 0.4, 0.1], "intensity": 0.6, "occludes": true },
+    { "id": "minecraft:magma_block", "color": [1.0, 0.3, 0.1], "intensity": 0.5, "occludes": true },
 
     { "id": "minecraft:glowstone", "color": [1.0, 0.9, 0.6], "intensity": 0.45, "occludes": false },
-    { "id": "minecraft:redstone_block", "color": [1.0, 0.15, 0.15], "intensity": 0.2, "occludes": false },
+    { "id": "minecraft:redstone_block", "color": [1.0, 0.15, 0.15], "intensity": 0.3, "occludes": false },
 
     { "id": "minecraft:sea_lantern", "color": [0.6, 0.9, 1.0], "intensity": 0.4, "occludes": false },
     { "id": "minecraft:shroomlight", "color": [1.0, 0.7, 0.4], "intensity": 0.425, "occludes": false },
@@ -14,7 +14,7 @@
     {
       "id": "minecraft:redstone_wall_torch",
       "color": [1.0, 0.2, 0.2],
-      "intensity": 0.225,
+      "intensity": 0.1,
       "activation": {
         "type": "property",
         "key": "lit"
@@ -23,7 +23,7 @@
     {
       "id": "minecraft:redstone_torch",
       "color": [1.0, 0.2, 0.2],
-      "intensity": 0.225,
+      "intensity": 0.1,
       "activation": {
         "type": "property",
         "key": "lit"
@@ -68,7 +68,7 @@
     {
       "id": "minecraft:redstone_lamp",
       "color": [1.0, 0.7, 0.3],
-      "intensity": 0.15,
+      "intensity": 0.2,
       "activation": {
         "type": "property",
         "key": "lit"
@@ -83,18 +83,18 @@
         "min": 1
       }
     },
-    { "id": "minecraft:torch", "color": [1.0, 0.7, 0.3], "intensity": 0.325, "occludes": true },
+    { "id": "minecraft:torch", "color": [1.0, 0.7, 0.3], "intensity": 0.12, "occludes": true },
     { "id": "minecraft:glow_item_frame", "color": [1.0, 0.9, 0.49], "intensity": 0.15, "occludes": true },
     { "id": "minecraft:campfire", "color": [1.0, 0.7, 0.3], "intensity": 0.35, "occludes": true },
-    { "id": "minecraft:soul_campfire", "color": [0.4, 0.9, 1.0], "intensity": 0.3, "occludes": true },
-    { "id": "minecraft:wall_torch", "color": [1.0, 0.7, 0.3], "intensity": 0.325, "occludes": true },
-    { "id": "minecraft:soul_torch", "color": [0.4, 0.9, 1.0], "intensity": 0.3, "occludes": true },
-    { "id": "minecraft:soul_wall_torch", "color": [0.4, 0.9, 1.0], "intensity": 0.3, "occludes": true },
+    { "id": "minecraft:soul_campfire", "color": [0.4, 0.9, 1.0], "intensity": 0.15, "occludes": true },
+    { "id": "minecraft:wall_torch", "color": [1.0, 0.7, 0.3], "intensity": 0.12, "occludes": true },
+    { "id": "minecraft:soul_torch", "color": [0.4, 0.9, 1.0], "intensity": 0.12, "occludes": true },
+    { "id": "minecraft:soul_wall_torch", "color": [0.4, 0.9, 1.0], "intensity": 0.12, "occludes": true },
     { "id": "minecraft:jack_o_lantern", "color": [1.0, 0.7, 0.3], "intensity": 0.15, "occludes": false },
 
-    { "id": "minecraft:ochre_froglight", "color": [1.0, 0.9, 0.5], "intensity": 0.225, "occludes": false },
-    { "id": "minecraft:verdant_froglight", "color": [0.612, 1.0, 0.63], "intensity": 0.225, "occludes": false },
-    { "id": "minecraft:pearlescent_froglight", "color": [0.9, 0.66, 1.0], "intensity": 0.225, "occludes": false },
+    { "id": "minecraft:ochre_froglight", "color": [1.0, 0.9, 0.5], "intensity": 0.27, "occludes": false },
+    { "id": "minecraft:verdant_froglight", "color": [0.612, 1.0, 0.63], "intensity": 0.27, "occludes": false },
+    { "id": "minecraft:pearlescent_froglight", "color": [0.9, 0.66, 1.0], "intensity": 0.27, "occludes": false },
     { "id": "minecraft:lantern", "color": [1.0, 0.8, 0.5], "intensity": 0.525, "occludes": true },
     { "id": "minecraft:soul_lantern", "color": [0.4, 0.9, 1.0], "intensity": 0.525, "occludes": true },
 
@@ -104,11 +104,11 @@
     { "id": "minecraft:crying_obsidian", "color": [0.6, 0.2, 1.0], "intensity": 0.2, "occludes": true },
     { "id": "minecraft:respawn_anchor", "color": [0.7, 0.3, 1.0], "intensity": 0.15, "occludes": true },
 
-    { "id": "minecraft:glow_lichen", "color": [0.6, 1.0, 0.6], "intensity": 0.2, "occludes": false },
+    { "id": "minecraft:glow_lichen", "color": [0.6, 1.0, 0.6], "intensity": 0.15, "occludes": false },
 
     { "id": "minecraft:sculk_catalyst", "color": [0.2, 0.8, 1.0], "intensity": 0.125, "occludes": true },
-    { "id": "minecraft:sculk_sensor", "color": [0.2, 0.7, 1.0], "intensity": 0.2, "occludes": true },
-    { "id": "minecraft:calibrated_sculk_sensor", "color": [0.2, 0.7, 1.0], "intensity": 0.3, "occludes": true }
+    { "id": "minecraft:sculk_sensor", "color": [0.2, 0.7, 1.0], "intensity": 0.12, "occludes": true },
+    { "id": "minecraft:calibrated_sculk_sensor", "color": [0.2, 0.7, 1.0], "intensity": 0.14, "occludes": true }
   ],
 
   "particles": [

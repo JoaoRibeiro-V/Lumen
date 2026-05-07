@@ -1,4 +1,4 @@
-package com.giothedev.lumen.client.Debug;
+package com.giothedev.lumora.client.Debug;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LumenProfiler {
+public class LumoraProfiler {
     private static final Map<String, Long> startTimes = new HashMap<>();
     private static final Map<String, Long> frameTotals = new HashMap<>();
     private static final Map<String, Integer> frameCounts = new HashMap<>();

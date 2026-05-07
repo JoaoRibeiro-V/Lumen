@@ -1,11 +1,8 @@
 {
   "required": true,
-  "package": "com.giothedev.lumen.client.mixin",
+  "package": "com.giothedev.lumora.client.Mixins",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "MixinGameRenderer",
-    "MixinGameRendererBob",
-    "MixinRenderSystem"
   ],
   "injectors": {
     "defaultRequire": 1
